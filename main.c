@@ -305,7 +305,6 @@ bool plant(struct crop *actual_crop, int *money)
 
 bool isSame(char *s1, char *s2)
 {
->>>>>>> ccf38a1 (added already created main.c)
     while (*s2 != '\0' && *s1 != '\0') {
         if (*s1 != *s2)
             return false;
