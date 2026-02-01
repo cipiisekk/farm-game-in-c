@@ -29,41 +29,6 @@ struct crop {
     int warehouse;
 };
 
-int main()
-{
-
-    char *menu[3] = {
-        "plant",
-        "havrest",
-        "end"
-    };
-
-    int money = 100;
-    int day = 0;
-
-    char choice_menu[20] = {0};
-    char choice_crops[20] = {0};
-
-    struct crop wheat = {"wheat", 5, 15, 0};
-    struct crop corn = {"corn",8, 24, 0};
-    struct crop potatoes = {"potatoes",10, 30, 0};
-
-    struct crop *crops[0];
-
-    do {
-        scanf("%19s", choice_menu);
-        lower(choice_menu);
-        if ((isSame(choice_menu, menu[0]) == true){
-
-
-        }
-
-    } while (isSame(choice_menu, menu[2]) == false);
-    int is_planted;
-    int warehouse;
-};
-
-
 void lower(char *s);
 bool isSame(char *s1, char *s2);
 bool plant(struct crop *actual_crop, int *money);
@@ -330,7 +295,5 @@ void lower(char *s)
         *s++;
     }
 }
-        s++;
-    }
-}
+
 
