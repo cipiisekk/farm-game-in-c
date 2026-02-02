@@ -20,7 +20,7 @@ struct crop {
     char name[20];
     int price;
     int sell;
-    int warehouse;
+    int stock;
     int is_planted;
 };
 
@@ -34,6 +34,9 @@ void error(char error[]);
 void clearBuffer();
 void printHarvest(struct crop crops[], int sizeOfCrops);
 void printPlant(struct crop crops[], int sizeOfCrops);
+bool back(char *choice);
+void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found);
+void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found);
 
 enum status {
     WAIT_COMMAND, WAIT_CROP, END
@@ -43,16 +46,18 @@ enum action {
     PLANT, HARVEST, NONE
 };
 
+// GLOBAL VARS
 enum status status = WAIT_COMMAND;
 enum action action = NONE;
+int money = 100;
+int day = 0;
+
 
 int main(void)
 {
     srand(time(NULL));
 
     bool found = false;
-    int money = 100;
-    int day = 0;
     char choice[20] = {0};
 
     char *menu[3] = {
@@ -79,13 +84,9 @@ int main(void)
         switch (status) {
             case WAIT_COMMAND:
                 if (isSame(choice, menu[0])) { // if choice is same as "plant"
-                    action = PLANT;
-                    status = WAIT_CROP;
                     printPlant(crops, sizeOfCrops);
 
                 } else if (isSame(choice, menu[1])) { // if choice is same as "harvest"
-                    action = HARVEST;
-                    status = WAIT_CROP;
                     printHarvest(crops, sizeOfCrops);
 
                 } else if (isSame(choice, menu[2])) { // if choice is same as "END" 
@@ -102,66 +103,34 @@ int main(void)
             case WAIT_CROP:
                 switch (action) {
                 case PLANT:
-                        if (isSame(choice,"back")) {
-                            printf("going back..\n");
-                            status = WAIT_COMMAND;
-                            action = NONE;
+                        if (back(choice) == true) {
                             printMenu(menu);
                             break;
                         }
-                        found = false;
-                        for (int i = 0; i < sizeOfCrops; i++) {
-                            if (isSame(choice,crops[i].name)) {
-
-                                if(plant(&crops[i], &money))
-                                    nextDay(&day, crops, sizeOfCrops);
-
-                                status = WAIT_COMMAND;
-                                action = NONE;
-                                printMenu(menu);
-                                found = true;
-                                break;
-                            }
-                        }
+                        plantChoice(choice, crops, sizeOfCrops, &found);
                         if (found == false) {
                             error("Unknown crop!\n");
-
-                            break;
-                        }
-
-                        break;
-                case HARVEST:
-                        if (isSame(choice,"back")) {
-                            printf("going back..\n");
-                            status = WAIT_COMMAND;
-                            action = NONE;
                             printMenu(menu);
                             break;
                         }
-                        found = false;
-                        for (int i = 0; i < sizeOfCrops; i++) {
-                            if (isSame(choice,crops[i].name)) {
-
-                                if(harvest(&crops[i], &money))
-                                    nextDay(&day, crops, sizeOfCrops);
-
-                                status = WAIT_COMMAND;
-                                action = NONE;
-                                printMenu(menu);
-                                found = true;
-                                break;
-                            }
+                        printMenu(menu);
+                        break;
+                case HARVEST:
+                        if (back(choice) == true) {
+                            printMenu(menu);
+                            break;
                         }
+                        harvestChoice(choice, crops, sizeOfCrops, &found);
                         if (found == false) {
-                            error("Unknown crop!\npls type it again: ");
+                            error("Unknown crop!\n");
+                            printMenu(menu);
                         }
-
+                        printMenu(menu);
                         break;
                 case NONE:
                         error("NONE as action!");
-                        break;
+                        return 1;
                 }
-
                 break;
 
             case END:
@@ -173,9 +142,57 @@ int main(void)
     return 0;
 }
 
+    bool back (char *choice)
+    {
+        if (isSame(choice,"back")) {
+            printf("going back..\n");
+
+            status = WAIT_COMMAND;
+            action = NONE;
+
+            return true;
+        }
+        return false;
+    }
+
+    void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found){
+        *found = false;
+        for (int i = 0; i < sizeOfCrops; i++) {
+            if (isSame(choice,crops[i].name)) {
+
+                if(harvest(&crops[i], &money))
+                    nextDay(&day, crops, sizeOfCrops);
+
+                status = WAIT_COMMAND;
+                action = NONE;
+                *found = true;
+                break;
+            }
+        }
+    }
+
+    void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found)
+    {
+        *found = false;
+        for (int i = 0; i < sizeOfCrops; i++) {
+            if (isSame(choice ,crops[i].name)) {
+
+                if(plant(&crops[i], &money))
+                    nextDay(&day, crops, sizeOfCrops);
+
+                status = WAIT_COMMAND;
+                action = NONE;
+                *found = true;
+            }
+        }
+    }
+
 
     void printPlant(struct crop crops[], int sizeOfCrops)
     {
+        action = PLANT;
+        status = WAIT_CROP;
+
         printf(COLOR_GREEN"Menu of crops & their prices:\n"COLOR_OFF);
         for (int i = 0; i < sizeOfCrops;i++) {
             printf("- %s cost: %d money\n", crops[i].name, crops[i].price);
@@ -185,10 +202,13 @@ int main(void)
 
     void printHarvest (struct crop crops[], int sizeOfCrops)
     {
+        action = HARVEST;
+        status = WAIT_CROP;
+
         printf(COLOR_YELLOW"Menu of crops & their sell prices: \n"COLOR_OFF);
             for (int k = 0; k < sizeOfCrops;k++) {
                 printf("- %s sell price: %d money, in stock %dx\n"
-                       , crops[k].name, crops[k].sell, crops[k].warehouse);
+                       , crops[k].name, crops[k].sell, crops[k].stock);
             }
 
             printf(COLOR_YELLOW"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_YELLOW" OR what crop u want to harvest: "COLOR_OFF);
@@ -211,7 +231,7 @@ int main(void)
     {
         *day += 1; // zvysi se den
         for (int i = 0; i < sizeOfCrops; i++) { // presune se vsechno planted do stock
-            crops[i].warehouse += crops[i].is_planted;
+            crops[i].stock += crops[i].is_planted;
             crops[i].is_planted = 0;
         }
     
@@ -228,14 +248,14 @@ int main(void)
 
     bool harvest(struct crop *actual_crop, int *money)
     {
-        if (actual_crop->warehouse == 0) {
+        if (actual_crop->stock == 0) {
             printf(COLOR_BOLD"ERROR: "COLOR_OFF);
-            printf("There is 0 %s in ur warehouse\n", actual_crop->name);
+            printf("There is 0 %s in ur stock\n", actual_crop->name);
             return false;
         } else {
-            *money+= (actual_crop->sell * actual_crop->warehouse);
-            printf("OK! Harvested %d %s, money added: %d\n",actual_crop->warehouse, actual_crop->name, (actual_crop->sell * actual_crop->warehouse));
-            actual_crop->warehouse = 0;
+            *money+= (actual_crop->sell * actual_crop->stock);
+            printf("OK! Harvested %d %s, money added: %d\n",actual_crop->stock, actual_crop->name, (actual_crop->sell * actual_crop->stock));
+            actual_crop->stock = 0;
             return true;
         }
     }
