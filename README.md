@@ -20,7 +20,6 @@ gcc main.c -Wall -Wextra -Wpedantic -std=c11 -o farm-game.out
 - [ ] make the user experience better
 
 <br>
-<br>
 
 ## Sanitized string input
 
