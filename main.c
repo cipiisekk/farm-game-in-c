@@ -89,7 +89,7 @@ int main(void)
                     for (int j = 0; j < sizeOfCrops;j++) {
                         printf("- %s cost: %d money\n", crops[j].name, crops[j].price);
                     }
-                    printf(COLOR_GREEN"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_GREEN" OR what crop u want to harvest: "COLOR_OFF);
+                    printf(COLOR_GREEN"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_GREEN" OR what crop u want to plant: "COLOR_OFF);
 
                 } else if (isSame(choice, menu[1])) {
                     action = HARVEST;
@@ -104,7 +104,7 @@ int main(void)
                     printf(ERROR_COLOR"OK! Ending the program...\n"COLOR_OFF);
                     status = END;
                 } else {
-                    error("Unknown command!\ntype command from menu: ");
+                    error("Unknown command!\n"COLOR_BOLD"type command from menu: "COLOR_OFF);
                 }
 
                 break;
@@ -134,7 +134,7 @@ int main(void)
                             }
                         }
                         if (found == false) {
-                            error("Unknown crop!\n pls type it again: ");
+                            error("Unknown crop!\npls type it again: ");
                             break;
                         }
 
@@ -162,7 +162,7 @@ int main(void)
                             }
                         }
                         if (found == false) {
-                            error("Unknown crop!\n pls type it again: ");
+                            error("Unknown crop!\npls type it again: ");
                         }
 
                         break;
