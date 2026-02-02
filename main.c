@@ -1,15 +1,9 @@
 /*
- * TODO:
  *
- * - Zlepseni algo apod.
- * Pridat pseudo-random eventy kazdy den
- * Vylepsit promene a algo, aby to bylo co nejmin zatezujici pro pamet:]
- *
- * - Zkrasleni kodu
- * Pridat commenty do kodu XD
- * Udelat kod vice citelny
- * Udelat prehlednejsi menu apod. pro bettr UX
+ * Created by cipiisekk
+ * 
  */
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
