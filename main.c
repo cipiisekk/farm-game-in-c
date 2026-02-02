@@ -68,7 +68,7 @@ int main(void)
     };
     int sizeOfMenu = (sizeof(menu) / sizeof(menu[0]));
 
-    struct crop crops[4] = {
+    struct crop crops[3] = {
         {"wheat", 5, 15, 0, 0},
         {"corn",8, 24, 0, 0},
         {"potatoes",10, 30, 0, 0}
@@ -199,12 +199,6 @@ int main(void)
         printf(": %s\n", error);
     }
 
-    void printMoney(int money)
-    {
-        // printf("++++++++++++++\n");
-        // printf("+ Money: %d +\n", money);
-        // printf("++++++++++++++\n");
-    }
 
     void nextDay(int *day, struct crop crops[], int sizeOfCrops)
     {
@@ -264,6 +258,7 @@ int main(void)
         int howMuch = 0;
         printf("How much %s u want to plant: ", actual_crop->name);
         scanf("%d", &howMuch);
+        clearBuffer();
         if (howMuch <= 0) {
             printf(COLOR_BOLD"ERROR: "COLOR_OFF);
             printf("U can't plant %d of %s\n Now is set to: 1", howMuch, actual_crop->name);
