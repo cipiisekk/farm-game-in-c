@@ -183,7 +183,7 @@ int main(void)
 }
 
 
-    void clearBuffer() {
+    void clearBuffer(void) {
         int c;
         while ((c = getchar()) != '\n' && c != EOF){}
     }
