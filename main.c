@@ -68,14 +68,6 @@ int main(void)
     };
     int sizeOfMenu = (sizeof(menu) / sizeof(menu[0]));
 
-    char *random_event[4] = {
-        "Normal",
-        "drought",
-        "storm",
-        "good_weather"
-    };
-    int sizeOfEvents = (sizeof(random_event) / sizeof(random_event[0]));
-
     struct crop crops[4] = {
         {"wheat", 5, 15, 0, 0},
         {"corn",8, 24, 0, 0},
@@ -216,48 +208,6 @@ int main(void)
 
     void nextDay(int *day, struct crop crops[], int sizeOfCrops)
     {
-        srand(time(NULL));
-
-        char *random_event[4] = {
-            "Normal",
-            "drought",
-            "storm",
-            "good_weather"
-        };
-        int sizeOfEvents = (sizeof(random_event) / sizeof(random_event[0]));
-        char day_event = *random_event[rand() % sizeOfEvents];
-
-        int kolik_plodin = 0;
-
-        if (day_event == *random_event[1]) {
-            for (int i = 0; i < sizeOfCrops; i++) {
-                kolik_plodin = rand() % 10;
-                crops[i].is_planted-= kolik_plodin; // v suchu muze byt az 10 plodin pici
-                if (crops[i].is_planted < 0) {
-                    crops[i].is_planted = 0;
-                    printf("Bourka ti znicila vsechny/u %s", crops[i].name);
-                } else {
-                    printf("Bourka ti znicila %dx %s, aktualne mas %dx", kolik_plodin, crops[i].name, crops[i].is_planted);
-                }
-            }
-        } else if (day_event == *random_event[2]) {
-            for (int i = 0; i < sizeOfCrops; i++) {
-
-                kolik_plodin = rand() % 30;
-                crops[i].is_planted-= kolik_plodin; // v bource muze byt az 30 plodin pici
-                if (crops[i].is_planted < 0) {
-                    crops[i].is_planted = 0;
-                    printf("Bourka ti znicila vsechny/u %s", crops[i].name);
-                } else {
-                    printf("Bourka ti znicila %dx %s, aktualne mas %dx", kolik_plodin, crops[i].name, crops[i].is_planted);
-                }
-            }
-        } else if (day_event == *random_event[3]) {
-            for (int i = 0; i < sizeOfCrops; i++) {
-                
-            }
-        }
-
 
         *day += 1;
         for (int i = 0; i < sizeOfCrops; i++) {
