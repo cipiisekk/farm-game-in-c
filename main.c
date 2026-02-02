@@ -12,6 +12,8 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 
 void lower(char *s);
 bool isSame(char *s1, char *s2);
@@ -27,6 +29,7 @@ struct crop {
     int price;
     int sell;
     int warehouse;
+    bool is_planted;
 };
 
 void lower(char *s);
@@ -66,8 +69,9 @@ int main(void)
         "end"
     };
     int sizeOfMenu = (sizeof(menu) / sizeof(menu[0]));
+    
 
-    struct crop crops[3] = {
+    struct crop crops[4] = {
         {"wheat", 5, 15, 0, 0},
         {"corn",8, 24, 0, 0},
         {"potatoes",10, 30, 0, 0}
@@ -187,106 +191,108 @@ int main(void)
     return 0;
 }
 
-bool isSame(char *s1, char *s2) {
-void clearBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF){}
-}
 
-void error(char error[]) {
-    printf(ERROR_COLOR"ERROR"COLOR_OFF);
-    printf(": %s\n", error);
-}
-
-void printMoney(int money)
-{
-    // printf("++++++++++++++\n");
-    // printf("+ Money: %d +\n", money);
-    // printf("++++++++++++++\n");
-}
-
-void nextDay(int *day, struct crop crops[], int size)
-{
-    *day += 1;
-    for (int i = 0; i < size; i++) {
-        crops[i].warehouse += crops[i].is_planted;
-        crops[i].is_planted = 0;
+    void clearBuffer() {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF){}
     }
-    // printf("----------\n");
-    // printf("- Day: %d -\n", *day);
-    // printf("----------\n");
-}
 
-void printMenu(char *menu[], int size)
-{
-    printf(COLOR_BOLD"Menu of commands:\n"COLOR_OFF);
-    // printf(COLOR_BOLD"Menu"COLOR_OFF);
-    // printf("of commands:\n");
-    for (int i = 0; i < size;i++) {
-        switch (i) {
-            case 0:
-                printf(COLOR_GREEN"- %s\n"COLOR_OFF,menu[i]);
+    void error(char error[]) {
+        printf(ERROR_COLOR"ERROR"COLOR_OFF);
+        printf(": %s\n", error);
+    }
+
+    void printMoney(int money)
+    {
+        // printf("++++++++++++++\n");
+        // printf("+ Money: %d +\n", money);
+        // printf("++++++++++++++\n");
+    }
+
+    void nextDay(int *day, struct crop crops[], int size)
+    {
+        *day += 1;
+        for (int i = 0; i < size; i++) {
+            crops[i].warehouse += crops[i].is_planted;
+            crops[i].is_planted = 0;
+        }
+        // printf("----------\n");
+        // printf("- Day: %d -\n", *day);
+        // printf("----------\n");
+    }
+
+    void printMenu(char *menu[], int size) {
+        printf(COLOR_BOLD"Menu of commands:\n"COLOR_OFF);
+        // printf(COLOR_BOLD"Menu"COLOR_OFF);
+        // printf("of commands:\n");
+        for (int i = 0; i < size;i++) {
+            switch (i) {
+                case 0:
+                    printf(COLOR_GREEN"- %s\n"COLOR_OFF,menu[i]);
                 break;
-            case 1:
-                printf(COLOR_YELLOW"- %s\n"COLOR_OFF,menu[i]);
+                case 1:
+                    printf(COLOR_YELLOW"- %s\n"COLOR_OFF,menu[i]);
                 break;
-            case 2:
-                printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
+                case 2:
+                    printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
                 break;
-            default:
-                printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
+                default:
+                    printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
+            }
+        }
+        printf(COLOR_BOLD"Type what u want to do: "COLOR_OFF);
+    }
+
+    bool harvest(struct crop *actual_crop, int *money)
+    {
+        if (actual_crop->warehouse == 0) {
+            printf(COLOR_BOLD"ERROR: "COLOR_OFF);
+            printf("There is 0 %s in ur warehouse\n", actual_crop->name);
+            return false;
+        } else {
+            *money+= (actual_crop->sell * actual_crop->warehouse);
+            printf("OK! Harvested %d %s, money added: %d\n",actual_crop->warehouse, actual_crop->name, (actual_crop->sell * actual_crop->warehouse));
+            actual_crop->warehouse = 0;
+            return true;
         }
     }
-    printf(COLOR_BOLD"Type what u want to do: "COLOR_OFF);
-}
 
-bool harvest(struct crop *actual_crop, int *money)
-{
-    if (actual_crop->warehouse == 0) {
-        printf(COLOR_BOLD"ERROR: "COLOR_OFF);
-        printf("There is 0 %s in ur warehouse\n", actual_crop->name);
-        return false;
-    } else {
-        *money+= (actual_crop->sell * actual_crop->warehouse);
-        printf("OK! Harvested %d %s, money added: %d\n",actual_crop->warehouse, actual_crop->name, (actual_crop->sell * actual_crop->warehouse));
-        actual_crop->warehouse = 0;
-        return true;
-    }
-}
 
-bool plant(struct crop *actual_crop, int *money)
-{
-    int howMuch = 0;
-    printf("How much %s u want to plant: ", actual_crop->name);
-    scanf("%d", &howMuch);
-    if (howMuch <= 0) {
-        printf(COLOR_BOLD"ERROR: "COLOR_OFF);
-        printf("U can't plant %d of %s\n Now is set to: 1", howMuch, actual_crop->name);
-        howMuch = 1;
+    bool plant(struct crop *actual_crop, int *money)
+    {
+        int howMuch = 0;
+        printf("How much %s u want to plant: ", actual_crop->name);
+        scanf("%d", &howMuch);
+        if (howMuch <= 0) {
+            printf(COLOR_BOLD"ERROR: "COLOR_OFF);
+            printf("U can't plant %d of %s\n Now is set to: 1", howMuch, actual_crop->name);
+            howMuch = 1;
+        }
+        if (*money >= (actual_crop->price * howMuch)) {
+            *money-= (actual_crop->price * howMuch);
+            actual_crop->is_planted+=howMuch;
+            return true;
+        } else {
+            printf("U dont have enought money\nUr money: %d, Cost of %dx %s: %d\n", *money, howMuch, actual_crop->name, actual_crop->price * howMuch);
+            return false;
+        }
     }
-    if (*money >= (actual_crop->price * howMuch)) {
-        *money-= (actual_crop->price * howMuch);
-        actual_crop->is_planted+=howMuch;
-        return true;
-    } else {
-        printf("U dont have enought money\nUr money: %d, Cost of %dx %s: %d\n", *money, howMuch, actual_crop->name, actual_crop->price * howMuch);
-        return false;
-    }
-}
 
-bool isSame(char *s1, char *s2)
-{
-    while (*s2 != '\0' && *s1 != '\0') {
+
+    bool isSame(char *s1, char *s2)
+    {
+        while (*s2 != '\0' && *s1 != '\0') {
+            if (*s1 != *s2)
+                return false;
+
+            s1++;
+            s2++;
+        }
         if (*s1 != *s2)
             return false;
-
-        s1++;
-        s2++;
+        return true;
     }
-    if (*s1 != *s2)
-        return false;
-    return true;
-}
+
 
 void lower(char *s)
 {
@@ -295,5 +301,3 @@ void lower(char *s)
         *s++;
     }
 }
-
-
