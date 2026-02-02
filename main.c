@@ -36,7 +36,6 @@ bool plant(struct crop *actual_crop, int *money);
 bool harvest(struct crop *actual_crop, int *money);
 void printMenu(char *menu[], int size);
 void nextDay(int *day, struct crop crops[], int size);
-void printMoney(int money);
 void error(char error[]);
 void clearBuffer();
 
@@ -202,19 +201,13 @@ int main(void)
 
     void nextDay(int *day, struct crop crops[], int sizeOfCrops)
     {
-
         *day += 1;
         for (int i = 0; i < sizeOfCrops; i++) {
             crops[i].warehouse += crops[i].is_planted;
             crops[i].is_planted = 0;
         }
 
-
-
-        // printf("----------\n");
-        // printf("- Day: %d -\n", *day);
-        // printf("----------\n");
-    }
+   }
 
     void printMenu(char *menu[], int size) {
         printf(COLOR_BOLD"Menu of commands:\n"COLOR_OFF);
