@@ -30,7 +30,7 @@ struct crop {
     int is_planted;
 };
 
-void lower(char *s);
+void my_lower(char *s);
 bool isSame(char *s1, char *s2);
 bool plant(struct crop *actual_crop, int *money);
 bool harvest(struct crop *actual_crop, int *money);
@@ -77,7 +77,7 @@ int main(void)
 
     do {
         scanf("%19s", choice);
-        lower(choice);
+        my_lower(choice);
         clearBuffer();
 
         switch (status) {
@@ -264,7 +264,7 @@ int main(void)
     }
 
 
-void lower(char *s)
+void my_lower(char *s)
 {
     while (*s != '\0') {
         *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0;
