@@ -15,8 +15,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-void lower(char *s);
-bool isSame(char *s1, char *s2);
 #define COLOR_BOLD  "\033[1m"
 #define ERROR_COLOR "\033[1;31m"
 #define COLOR_GREEN "\033[32m"
