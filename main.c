@@ -27,7 +27,7 @@ struct crop {
     int price;
     int sell;
     int warehouse;
-    bool is_planted;
+    int is_planted;
 };
 
 void lower(char *s);
