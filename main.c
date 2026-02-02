@@ -206,9 +206,9 @@ int main(void)
         status = WAIT_CROP;
 
         printf(COLOR_YELLOW"Menu of crops & their sell prices: \n"COLOR_OFF);
-            for (int k = 0; k < sizeOfCrops;k++) {
+            for (int i = 0; i < sizeOfCrops;i++) {
                 printf("- %s sell price: %d money, in stock %dx\n"
-                       , crops[k].name, crops[k].sell, crops[k].stock);
+                       , crops[i].name, crops[i].sell, crops[i].stock);
             }
 
             printf(COLOR_YELLOW"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_YELLOW" OR what crop u want to harvest: "COLOR_OFF);
