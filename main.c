@@ -32,6 +32,8 @@ void printMenu(char *menu[]);
 void nextDay(int *day, struct crop crops[], int size);
 void error(char error[]);
 void clearBuffer();
+void printHarvest(struct crop crops[], int sizeOfCrops);
+void printPlant(struct crop crops[], int sizeOfCrops);
 
 enum status {
     WAIT_COMMAND, WAIT_CROP, END
@@ -76,29 +78,23 @@ int main(void)
 
         switch (status) {
             case WAIT_COMMAND:
-                if (isSame(choice, menu[0])) {
+                if (isSame(choice, menu[0])) { // if choice is same as "plant"
                     action = PLANT;
                     status = WAIT_CROP;
-                    printf(COLOR_GREEN"Menu of crops & their prices:\n"COLOR_OFF);
-                    for (int j = 0; j < sizeOfCrops;j++) {
-                        printf("- %s cost: %d money\n", crops[j].name, crops[j].price);
-                    }
-                    printf(COLOR_GREEN"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_GREEN" OR what crop u want to plant: "COLOR_OFF);
+                    printPlant(crops, sizeOfCrops);
 
-                } else if (isSame(choice, menu[1])) {
+                } else if (isSame(choice, menu[1])) { // if choice is same as "harvest"
                     action = HARVEST;
                     status = WAIT_CROP;
-                    printf(COLOR_YELLOW"Menu of crops & their sell prices: \n"COLOR_OFF);
-                    for (int k = 0; k < sizeOfCrops;k++) {
-                        printf("- %s sell price: %d money, in stock %dx\n", crops[k].name, crops[k].sell, crops[k].warehouse);
-                    }
-                    printf(COLOR_YELLOW"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_YELLOW" OR what crop u want to harvest: "COLOR_OFF);
+                    printHarvest(crops, sizeOfCrops);
 
-                } else if (isSame(choice, menu[2])) {
-                    printf(ERROR_COLOR"OK! Ending the program...\n"COLOR_OFF);
+                } else if (isSame(choice, menu[2])) { // if choice is same as "END" 
                     status = END;
+                    printf(ERROR_COLOR"OK! Ending the program...\n"COLOR_OFF);
+
                 } else {
-                    error("Unknown command!\n"COLOR_BOLD"type command from menu: "COLOR_OFF);
+                    error("Unknown command!\n");
+                    printMenu(menu);
                 }
 
                 break;
@@ -128,7 +124,8 @@ int main(void)
                             }
                         }
                         if (found == false) {
-                            error("Unknown crop!\npls type it again: ");
+                            error("Unknown crop!\n");
+
                             break;
                         }
 
@@ -177,12 +174,34 @@ int main(void)
 }
 
 
-    void clearBuffer(void) {
+    void printPlant(struct crop crops[], int sizeOfCrops)
+    {
+        printf(COLOR_GREEN"Menu of crops & their prices:\n"COLOR_OFF);
+        for (int i = 0; i < sizeOfCrops;i++) {
+            printf("- %s cost: %d money\n", crops[i].name, crops[i].price);
+        }
+        printf(COLOR_GREEN"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_GREEN" OR what crop u want to plant: "COLOR_OFF);
+    }
+
+    void printHarvest (struct crop crops[], int sizeOfCrops)
+    {
+        printf(COLOR_YELLOW"Menu of crops & their sell prices: \n"COLOR_OFF);
+            for (int k = 0; k < sizeOfCrops;k++) {
+                printf("- %s sell price: %d money, in stock %dx\n"
+                       , crops[k].name, crops[k].sell, crops[k].warehouse);
+            }
+
+            printf(COLOR_YELLOW"Type "COLOR_OFF COLOR_BOLD"back"COLOR_OFF COLOR_YELLOW" OR what crop u want to harvest: "COLOR_OFF);
+    }
+
+    void clearBuffer(void) 
+    {
         int c;
         while ((c = getchar()) != '\n' && c != EOF){}
     }
 
-    void error(char error[]) {
+    void error(char error[]) 
+    {
         printf(ERROR_COLOR"ERROR"COLOR_OFF);
         printf(": %s\n", error);
     }
@@ -190,15 +209,16 @@ int main(void)
 
     void nextDay(int *day, struct crop crops[], int sizeOfCrops)
     {
-        *day += 1;
-        for (int i = 0; i < sizeOfCrops; i++) {
+        *day += 1; // zvysi se den
+        for (int i = 0; i < sizeOfCrops; i++) { // presune se vsechno planted do stock
             crops[i].warehouse += crops[i].is_planted;
             crops[i].is_planted = 0;
         }
+    
+    }
 
-   }
-
-    void printMenu(char *menu[]) {
+    void printMenu(char *menu[]) 
+    {
         printf(COLOR_BOLD"Menu of commands:\n"COLOR_OFF);
                     printf(COLOR_GREEN"- %s\n"COLOR_OFF,menu[0]);
                     printf(COLOR_YELLOW"- %s\n"COLOR_OFF,menu[1]);
@@ -258,10 +278,10 @@ int main(void)
     }
 
 
-void my_lower(char *s)
-{
-    while (*s != '\0') {
-        *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0;
-        s++;
+    void my_lower(char *s)
+    {
+        while (*s != '\0') {
+            *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0;
+            s++;
+        }
     }
-}
