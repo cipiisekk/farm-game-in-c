@@ -15,12 +15,12 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define COLOR_BOLD  "\033[1m"
+#define COLOR_BOLD "\033[1m"
 #define ERROR_COLOR "\033[1;31m"
 #define COLOR_GREEN "\033[32m"
 #define COLOR_YELLOW "\033[33m"
 #define COLOR_CYAN "\033[36m"
-#define COLOR_OFF   "\033[m"
+#define COLOR_OFF  "\033[m"
 
 struct crop {
     char name[20];
@@ -34,11 +34,10 @@ void lower(char *s);
 bool isSame(char *s1, char *s2);
 bool plant(struct crop *actual_crop, int *money);
 bool harvest(struct crop *actual_crop, int *money);
-void printMenu(char *menu[], int size);
+void printMenu(char *menu[]);
 void nextDay(int *day, struct crop crops[], int size);
 void error(char error[]);
 void clearBuffer();
-
 
 enum status {
     WAIT_COMMAND, WAIT_CROP, END
@@ -51,13 +50,13 @@ enum action {
 enum status status = WAIT_COMMAND;
 enum action action = NONE;
 
-
 int main(void)
 {
+    srand(time(NULL));
+
     bool found = false;
     int money = 100;
     int day = 0;
-
     char choice[20] = {0};
 
     char *menu[3] = {
@@ -65,7 +64,6 @@ int main(void)
         "harvest",
         "end"
     };
-    int sizeOfMenu = (sizeof(menu) / sizeof(menu[0]));
 
     struct crop crops[3] = {
         {"wheat", 5, 15, 0, 0},
@@ -75,8 +73,7 @@ int main(void)
     int sizeOfCrops = sizeof(crops) / sizeof(crops[0]);
 
     nextDay(&day, crops, sizeOfCrops);
-    printMoney(money);
-    printMenu(menu, sizeOfMenu);
+    printMenu(menu);
 
     do {
         scanf("%19s", choice);
@@ -88,7 +85,6 @@ int main(void)
                 if (isSame(choice, menu[0])) {
                     action = PLANT;
                     status = WAIT_CROP;
-                    printMoney(money);
                     printf(COLOR_GREEN"Menu of crops & their prices:\n"COLOR_OFF);
                     for (int j = 0; j < sizeOfCrops;j++) {
                         printf("- %s cost: %d money\n", crops[j].name, crops[j].price);
@@ -98,7 +94,6 @@ int main(void)
                 } else if (isSame(choice, menu[1])) {
                     action = HARVEST;
                     status = WAIT_CROP;
-                    printMoney(money);
                     printf(COLOR_YELLOW"Menu of crops & their sell prices: \n"COLOR_OFF);
                     for (int k = 0; k < sizeOfCrops;k++) {
                         printf("- %s sell price: %d money, in stock %dx\n", crops[k].name, crops[k].sell, crops[k].warehouse);
@@ -121,7 +116,7 @@ int main(void)
                             printf("going back..\n");
                             status = WAIT_COMMAND;
                             action = NONE;
-                            printMenu(menu, sizeOfMenu);
+                            printMenu(menu);
                             break;
                         }
                         found = false;
@@ -133,7 +128,7 @@ int main(void)
 
                                 status = WAIT_COMMAND;
                                 action = NONE;
-                                printMenu(menu, sizeOfMenu);
+                                printMenu(menu);
                                 found = true;
                                 break;
                             }
@@ -149,7 +144,7 @@ int main(void)
                             printf("going back..\n");
                             status = WAIT_COMMAND;
                             action = NONE;
-                            printMenu(menu, sizeOfMenu);
+                            printMenu(menu);
                             break;
                         }
                         found = false;
@@ -161,7 +156,7 @@ int main(void)
 
                                 status = WAIT_COMMAND;
                                 action = NONE;
-                                printMenu(menu, sizeOfMenu);
+                                printMenu(menu);
                                 found = true;
                                 break;
                             }
@@ -209,25 +204,11 @@ int main(void)
 
    }
 
-    void printMenu(char *menu[], int size) {
+    void printMenu(char *menu[]) {
         printf(COLOR_BOLD"Menu of commands:\n"COLOR_OFF);
-        // printf(COLOR_BOLD"Menu"COLOR_OFF);
-        // printf("of commands:\n");
-        for (int i = 0; i < size;i++) {
-            switch (i) {
-                case 0:
-                    printf(COLOR_GREEN"- %s\n"COLOR_OFF,menu[i]);
-                break;
-                case 1:
-                    printf(COLOR_YELLOW"- %s\n"COLOR_OFF,menu[i]);
-                break;
-                case 2:
-                    printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
-                break;
-                default:
-                    printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[i]);
-            }
-        }
+                    printf(COLOR_GREEN"- %s\n"COLOR_OFF,menu[0]);
+                    printf(COLOR_YELLOW"- %s\n"COLOR_OFF,menu[1]);
+                    printf(COLOR_CYAN"- %s\n"COLOR_OFF,menu[2]);
         printf(COLOR_BOLD"Type what u want to do: "COLOR_OFF);
     }
 
@@ -287,6 +268,6 @@ void lower(char *s)
 {
     while (*s != '\0') {
         *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0;
-        *s++;
+        s++;
     }
 }
