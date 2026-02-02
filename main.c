@@ -52,7 +52,7 @@ enum action action = NONE;
 int money = 100;
 int day = 0;
 
-
+// MAIN
 int main(void)
 {
     srand(time(NULL));
@@ -141,6 +141,7 @@ int main(void)
 
     return 0;
 }
+// END OF MAIN
 
     bool back (char *choice)
     {
@@ -160,7 +161,7 @@ int main(void)
         for (int i = 0; i < sizeOfCrops; i++) {
             if (isSame(choice,crops[i].name)) {
 
-                if(harvest(&crops[i], &money))
+                if(harvest(&crops[i], &money)) // pokud proda pridej dalsi den
                     nextDay(&day, crops, sizeOfCrops);
 
                 status = WAIT_COMMAND;
@@ -177,7 +178,7 @@ int main(void)
         for (int i = 0; i < sizeOfCrops; i++) {
             if (isSame(choice ,crops[i].name)) {
 
-                if(plant(&crops[i], &money))
+                if(plant(&crops[i], &money)) // pokud koupi pridej dalsi den
                     nextDay(&day, crops, sizeOfCrops);
 
                 status = WAIT_COMMAND;
@@ -217,7 +218,7 @@ int main(void)
     void clearBuffer(void) 
     {
         int c;
-        while ((c = getchar()) != '\n' && c != EOF){}
+        while ((c = getchar()) != '\n' && c != EOF){} // vycisti buffer, aby neblo mozne zadat "wheat 123", cistě osetreni vstupu
     }
 
     void error(char error[]) 
@@ -285,14 +286,14 @@ int main(void)
 
     bool isSame(char *s1, char *s2)
     {
-        while (*s2 != '\0' && *s1 != '\0') {
-            if (*s1 != *s2)
+        while (*s2 != '\0' && *s1 != '\0') { // probiha dokud ani jeden pointeru na char v stringu neni end stringu, pokud je jeden, nebo druhy while se prerusi
+            if (*s1 != *s2) // pokud se nerovnaji dva znaky stejne -> nemuzou byt stringy stejne
                 return false;
 
-            s1++;
+            s1++; //posune se o znak dal
             s2++;
         }
-        if (*s1 != *s2)
+        if (*s1 != *s2) // je to tu proto kdyz by jeden z charu u stringu mel '\0' a druhy jeste mel nejaky alfanumericky znak
             return false;
         return true;
     }
@@ -301,7 +302,7 @@ int main(void)
     void my_lower(char *s)
     {
         while (*s != '\0') {
-            *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0;
-            s++;
+            *s += (*s >= 'A' && *s <= 'Z') ? ('a' - 'A'): 0; // pokud je char ve stringu velke pismeno v ascii -> odeber 32 int z charu, protoze takovy je rozdil mezi a-A
+            s++; // prejdi na dalsi pointer char
         }
     }
