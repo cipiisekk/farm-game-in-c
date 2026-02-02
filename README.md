@@ -7,6 +7,21 @@
 gcc main.c -Wall -Wextra -Wpedantic -std=c11 -o farm-game.out
 ```
 
+<br>
+
+## TODO LIST
+### Improve the game
+- [ ] add random daily events (like storms or good weather)
+- [ ] make variables and the algorithm use less memory
+
+### Improve the code
+- [ ] add comments to the code
+- [ ] make the code easier to read
+- [ ] make the user experience better
+
+<br>
+<br>
+
 ## Sanitized string input
 
 ```c
