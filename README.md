@@ -11,7 +11,7 @@ gcc main.c -Wall -Wextra -Wpedantic -std=c11 -o farm-game.out
 
 ## TODO LIST
 ### Improve the game
-- [ ] add random daily events (like storms or good weather)
+- [ ] add pseudo-random daily events (like storms or good weather)
 - [ ] make variables and the algorithm use less memory
 
 ### Improve the code
@@ -100,3 +100,4 @@ In do-while loop
     }
 
 ```
+
