@@ -35,8 +35,8 @@ void clearBuffer();
 void printHarvest(struct crop crops[], int sizeOfCrops);
 void printPlant(struct crop crops[], int sizeOfCrops);
 bool back(char *choice);
-void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found);
-void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found);
+void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found, int *money, int *day);
+void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found, int *money, int *day);
 
 enum status {
     WAIT_COMMAND, WAIT_CROP, END
@@ -49,8 +49,6 @@ enum action {
 // GLOBAL VARS
 enum status status = WAIT_COMMAND;
 enum action action = NONE;
-int money = 100;
-int day = 0;
 
 // MAIN
 int main(void)
@@ -59,6 +57,8 @@ int main(void)
 
     bool found = false;
     char choice[20] = {0};
+    int money = 100;
+    int day = 0;
 
     char *menu[3] = {
         "plant",
@@ -107,7 +107,7 @@ int main(void)
                             printMenu(menu);
                             break;
                         }
-                        plantChoice(choice, crops, sizeOfCrops, &found);
+                        plantChoice(choice, crops, sizeOfCrops, &found, &money, &day);
                         if (found == false) {
                             error("Unknown crop!\n");
                             printMenu(menu);
@@ -120,7 +120,7 @@ int main(void)
                             printMenu(menu);
                             break;
                         }
-                        harvestChoice(choice, crops, sizeOfCrops, &found);
+                        harvestChoice(choice, crops, sizeOfCrops, &found, &money, &day);
                         if (found == false) {
                             error("Unknown crop!\n");
                             printMenu(menu);
@@ -156,13 +156,13 @@ int main(void)
         return false;
     }
 
-    void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found){
+    void harvestChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found, int *money, int *day){
         *found = false;
         for (int i = 0; i < sizeOfCrops; i++) {
             if (isSame(choice,crops[i].name)) {
 
-                if(harvest(&crops[i], &money)) // pokud proda pridej dalsi den
-                    nextDay(&day, crops, sizeOfCrops);
+                if(harvest(&crops[i], money)) // pokud proda pridej dalsi den
+                    nextDay(day, crops, sizeOfCrops);
 
                 status = WAIT_COMMAND;
                 action = NONE;
@@ -172,14 +172,14 @@ int main(void)
         }
     }
 
-    void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found)
+    void plantChoice(char *choice,struct crop crops[], int sizeOfCrops, bool *found, int *money, int *day)
     {
         *found = false;
         for (int i = 0; i < sizeOfCrops; i++) {
             if (isSame(choice ,crops[i].name)) {
 
-                if(plant(&crops[i], &money)) // pokud koupi pridej dalsi den
-                    nextDay(&day, crops, sizeOfCrops);
+                if(plant(&crops[i], money)) // pokud koupi pridej dalsi den
+                    nextDay(day, crops, sizeOfCrops);
 
                 status = WAIT_COMMAND;
                 action = NONE;
